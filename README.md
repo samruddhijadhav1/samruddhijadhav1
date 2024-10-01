@@ -1,4 +1,5 @@
 package samu123;
+
 import java.util.Random;
 import java.util.Scanner;
 public class numberdemo {
