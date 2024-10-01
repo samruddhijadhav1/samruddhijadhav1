@@ -1,0 +1,76 @@
+import java.util.Scanner;
+import java.util.concurrent.*;
+
+public class QuizApplicationWithTimer {
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        Scanner scanner = new Scanner(System.in);
+
+        // Quiz questions and answers
+        String[][] questions = {
+            {"What is the capital of France?", "A. Berlin", "B. London", "C. Paris", "D. Rome", "C"},
+            {"Which planet is known as the Red Planet?", "A. Earth", "B. Mars", "C. Jupiter", "D. Venus", "B"},
+            {"What is the largest ocean on Earth?", "A. Atlantic Ocean", "B. Indian Ocean", "C. Arctic Ocean", "D. Pacific Ocean", "D"},
+        };
+        
+        int score = 0;
+        int timeLimitInSeconds = 10;  // Time limit per question in seconds
+        
+        System.out.println("Welcome to the Quiz! You have " + timeLimitInSeconds + " seconds to answer each question.\n");
+
+        // Loop through each question
+        for (int i = 0; i < questions.length; i++) {
+            System.out.println("Question " + (i + 1) + ":");
+            System.out.println(questions[i][0]);
+            System.out.println(questions[i][1]);
+            System.out.println(questions[i][2]);
+            System.out.println(questions[i][3]);
+            System.out.println(questions[i][4]);
+
+            // Start timer for the question
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            Future<String> future = executor.submit(new UserInputTask(scanner));
+            
+            String userAnswer = null;
+            try {
+                // User has limited time to input their answer
+                userAnswer = future.get(timeLimitInSeconds, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                System.out.println("\nTime's up! You didn't answer in time.");
+                userAnswer = "";  // Empty answer for timeout
+                future.cancel(true);
+            } finally {
+                executor.shutdownNow();
+            }
+
+            // Check answer
+            if (userAnswer.equalsIgnoreCase(questions[i][5])) {
+                System.out.println("Correct!");
+                score++;
+            } else {
+                System.out.println("Incorrect! The correct answer is " + questions[i][5] + ".");
+            }
+
+            System.out.println();
+        }
+
+        // Display final score
+        System.out.println("Quiz over! You scored " + score + " out of " + questions.length + ".");
+        scanner.close();
+    }
+}
+
+// Separate class for user input task with callable (to handle timeouts)
+class UserInputTask implements Callable<String> {
+    private final Scanner scanner;
+
+    public UserInputTask(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    @Override
+    public String call() {
+        System.out.print("Your answer: ");
+        return scanner.nextLine();
+    }
+}
