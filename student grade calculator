@@ -1,0 +1,50 @@
+package samu123;
+import java.util.Random;
+import java.util.Scanner;
+public class numberdemo {
+
+
+	    public static void main(String[] args) {
+	        Scanner scanner = new Scanner(System.in);
+
+	        // Step 1: Input number of subjects
+	        System.out.print("Enter the number of subjects: ");
+	        int numberOfSubjects = scanner.nextInt();
+
+	        // Array to hold marks for each subject
+	        int[] marks = new int[numberOfSubjects];
+	        int totalMarks = 0;
+
+	        // Step 2: Input marks for each subject
+	        for (int i = 0; i < numberOfSubjects; i++) {
+	            System.out.print("Enter marks obtained in subject " + (i + 1) + " (out of 100): ");
+	            marks[i] = scanner.nextInt();
+	            totalMarks += marks[i];
+	        }
+
+	        // Step 3: Calculate average percentage
+	        double averagePercentage = (double) totalMarks / numberOfSubjects;
+
+	        // Step 4: Grade calculation based on average percentage
+	        char grade;
+	        if (averagePercentage >= 90) {
+	            grade = 'A';
+	        } else if (averagePercentage >= 80) {
+	            grade = 'B';
+	        } else if (averagePercentage >= 70) {
+	            grade = 'C';
+	        } else if (averagePercentage >= 60) {
+	            grade = 'D';
+	        } else {
+	            grade = 'F';
+	        }
+
+	        // Step 5: Display the results
+	        System.out.println("\n--- Result ---");
+	        System.out.println("Total Marks: " + totalMarks);
+	        System.out.println("Average Percentage: " + averagePercentage + "%");
+	        System.out.println("Grade: " + grade);
+
+	        scanner.close();
+	    }
+	}
